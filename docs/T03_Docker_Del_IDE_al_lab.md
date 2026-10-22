@@ -955,7 +955,24 @@ ssh -i labsuser.pem -L 8080:localhost:80 ubuntu@<IP-PUBLICA-EC2>
 
 **3. Abre <http://localhost:8080>** en el navegador de tu PC.
 
-Si Windows dice que la clave tiene permisos demasiado abiertos, en PowerShell, en la carpeta de la clave:
+Si al abrir el túnel sale `UNPROTECTED PRIVATE KEY FILE` o `Permissions ... are too open`, la clave tiene permisos que dejan leerla a otros usuarios y SSH se niega a usarla. Arréglalo en la carpeta de la clave:
+
+**Linux / Mac (LliureX):**
+
+```bash
+chmod 400 labsuser.pem
+```
+
+Si sigue fallando, la clave está en un USB o en una partición de Windows (NTFS/FAT), donde `chmod` no tiene efecto. Cópiala a tu carpeta personal y usa esa copia:
+
+```bash
+mkdir -p ~/.ssh
+cp labsuser.pem ~/.ssh/
+chmod 400 ~/.ssh/labsuser.pem
+ssh -i ~/.ssh/labsuser.pem -L 8080:localhost:80 ubuntu@<IP-PUBLICA-EC2>
+```
+
+**Windows (PowerShell):**
 
 ```powershell
 icacls labsuser.pem /inheritance:r
